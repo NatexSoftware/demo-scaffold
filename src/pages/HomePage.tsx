@@ -1,89 +1,72 @@
-import { Users, Package, TrendingUp, Activity } from 'lucide-react'
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Typography from '@mui/material/Typography'
+import Avatar from '@mui/material/Avatar'
+import Chip from '@mui/material/Chip'
+import Stack from '@mui/material/Stack'
+import Grid from '@mui/material/Grid'
+import PeopleIcon from '@mui/icons-material/People'
+import InventoryIcon from '@mui/icons-material/Inventory'
+import TrendingUpIcon from '@mui/icons-material/TrendingUp'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import { mockUsers, mockProducts } from '@/mock'
 
-// 簡易統計卡片資料（直接從假資料計算）
 const stats = [
-  {
-    label: '使用者總數',
-    value: 20,
-    icon: Users,
-    color: 'text-blue-600 bg-blue-50',
-    change: '+12%',
-  },
-  {
-    label: '產品總數',
-    value: 30,
-    icon: Package,
-    color: 'text-green-600 bg-green-50',
-    change: '+5%',
-  },
-  {
-    label: '本月成長',
-    value: '18%',
-    icon: TrendingUp,
-    color: 'text-purple-600 bg-purple-50',
-    change: '+3%',
-  },
-  {
-    label: '系統狀態',
-    value: '正常',
-    icon: Activity,
-    color: 'text-orange-600 bg-orange-50',
-    change: '100% uptime',
-  },
+  { label: '使用者總數', value: mockUsers.length, icon: <PeopleIcon />, color: '#2563eb' },
+  { label: '產品總數', value: mockProducts.length, icon: <InventoryIcon />, color: '#16a34a' },
+  { label: '本月成長', value: '18%', icon: <TrendingUpIcon />, color: '#9333ea' },
+  { label: '系統狀態', value: '正常', icon: <CheckCircleIcon />, color: '#ea580c' },
 ]
 
 export default function HomePage() {
-  // 取最新 5 筆使用者
   const recentUsers = mockUsers.slice(0, 5)
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">總覽</h1>
-        <p className="text-gray-500 text-sm mt-1">歡迎使用 Demo Scaffold</p>
-      </div>
+    <Box>
+      <Typography variant="h5" fontWeight={700} gutterBottom>總覽</Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>歡迎使用 Demo Scaffold</Typography>
 
-      {/* 統計卡片 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <Grid container spacing={2} sx={{ mb: 3 }}>
         {stats.map((stat) => (
-          <div key={stat.label} className="card p-5">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-sm text-gray-500">{stat.label}</span>
-              <div className={`p-2 rounded-lg ${stat.color}`}>
-                <stat.icon size={18} />
-              </div>
-            </div>
-            <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-            <p className="text-xs text-green-600 mt-1">{stat.change} 較上期</p>
-          </div>
+          <Grid item xs={12} sm={6} lg={3} key={stat.label}>
+            <Card>
+              <CardContent>
+                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
+                  <Typography variant="body2" color="text.secondary">{stat.label}</Typography>
+                  <Avatar sx={{ width: 36, height: 36, bgcolor: `${stat.color}15`, color: stat.color }}>
+                    {stat.icon}
+                  </Avatar>
+                </Stack>
+                <Typography variant="h5" fontWeight={700}>{stat.value}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
         ))}
-      </div>
+      </Grid>
 
-      {/* 最新使用者 */}
-      <div className="card p-5">
-        <h2 className="text-base font-semibold text-gray-900 mb-4">最新使用者</h2>
-        <div className="space-y-3">
-          {recentUsers.map((user) => (
-            <div key={user.id} className="flex items-center gap-3">
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-8 h-8 rounded-full object-cover bg-gray-200"
-              />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
-                <p className="text-xs text-gray-500 truncate">{user.email}</p>
-              </div>
-              <span className={`text-xs px-2 py-0.5 rounded-full ${
-                user.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
-              }`}>
-                {user.status === 'active' ? '啟用' : '停用'}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+      <Card>
+        <CardContent>
+          <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2 }}>最新使用者</Typography>
+          <Stack spacing={1.5}>
+            {recentUsers.map((user) => (
+              <Stack key={user.id} direction="row" alignItems="center" spacing={1.5}>
+                <Avatar src={user.avatar} sx={{ width: 32, height: 32 }}>{user.name[0]}</Avatar>
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  <Typography variant="body2" fontWeight={500} noWrap>{user.name}</Typography>
+                  <Typography variant="caption" color="text.secondary" noWrap>{user.email}</Typography>
+                </Box>
+                <Chip
+                  label={user.status === 'active' ? '啟用' : '停用'}
+                  size="small"
+                  color={user.status === 'active' ? 'success' : 'default'}
+                  variant="outlined"
+                />
+              </Stack>
+            ))}
+          </Stack>
+        </CardContent>
+      </Card>
+    </Box>
   )
 }

@@ -1,24 +1,31 @@
 import { Outlet } from 'react-router-dom'
+import Box from '@mui/material/Box'
 import Header from './Header'
 import Sidebar from './Sidebar'
 import { useAppStore } from '@/store/useAppStore'
-import { cn } from '@/utils/cn'
+
+const SIDEBAR_WIDTH = 240
 
 export default function Layout() {
   const sidebarOpen = useAppStore((s) => s.sidebarOpen)
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
-      <div className="flex flex-1">
+      <Box sx={{ display: 'flex', flex: 1 }}>
         <Sidebar />
-        <main className={cn(
-          'flex-1 p-6 transition-all duration-200',
-          sidebarOpen ? 'ml-60' : 'ml-0'
-        )}>
+        <Box
+          component="main"
+          sx={{
+            flex: 1,
+            p: 3,
+            ml: sidebarOpen ? `${SIDEBAR_WIDTH}px` : 0,
+            transition: 'margin-left 0.2s',
+          }}
+        >
           <Outlet />
-        </main>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   )
 }

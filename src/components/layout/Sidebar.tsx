@@ -1,14 +1,24 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, Package, Settings } from 'lucide-react'
+import Drawer from '@mui/material/Drawer'
+import List from '@mui/material/List'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import Toolbar from '@mui/material/Toolbar'
+import DashboardIcon from '@mui/icons-material/Dashboard'
+import PeopleIcon from '@mui/icons-material/People'
+import InventoryIcon from '@mui/icons-material/Inventory'
+import SettingsIcon from '@mui/icons-material/Settings'
 import { useAppStore } from '@/store/useAppStore'
-import { cn } from '@/utils/cn'
+
+const SIDEBAR_WIDTH = 240
 
 // TODO: 依規格書調整選單項目
 const NAV_ITEMS = [
-  { to: '/', label: '首頁總覽', icon: LayoutDashboard },
-  { to: '/users', label: '使用者管理', icon: Users },
-  { to: '/products', label: '產品管理', icon: Package },
-  { to: '/settings', label: '系統設定', icon: Settings },
+  { to: '/', label: '首頁總覽', icon: <DashboardIcon /> },
+  { to: '/users', label: '使用者管理', icon: <PeopleIcon /> },
+  { to: '/products', label: '產品管理', icon: <InventoryIcon /> },
+  { to: '/settings', label: '系統設定', icon: <SettingsIcon /> },
 ]
 
 export default function Sidebar() {
@@ -17,27 +27,34 @@ export default function Sidebar() {
   if (!sidebarOpen) return null
 
   return (
-    <aside className="fixed top-14 left-0 w-60 h-[calc(100vh-3.5rem)] bg-white border-r border-gray-200 flex flex-col py-4 z-30">
-      <nav className="flex-1 px-3 space-y-1">
-        {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
-          <NavLink
+    <Drawer
+      variant="persistent"
+      open={sidebarOpen}
+      sx={{
+        width: SIDEBAR_WIDTH,
+        flexShrink: 0,
+        '& .MuiDrawer-paper': { width: SIDEBAR_WIDTH, boxSizing: 'border-box' },
+      }}
+    >
+      <Toolbar variant="dense" sx={{ minHeight: 56 }} />
+      <List sx={{ px: 1 }}>
+        {NAV_ITEMS.map(({ to, label, icon }) => (
+          <ListItemButton
             key={to}
+            component={NavLink}
             to={to}
             end={to === '/'}
-            className={({ isActive }) =>
-              cn(
-                'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-primary-50 text-primary-700'
-                  : 'text-gray-600 hover:bg-gray-100'
-              )
-            }
+            sx={{
+              borderRadius: 1,
+              mb: 0.5,
+              '&.active': { bgcolor: 'primary.50', color: 'primary.main' },
+            }}
           >
-            <Icon size={18} />
-            {label}
-          </NavLink>
+            <ListItemIcon sx={{ minWidth: 36, color: 'inherit' }}>{icon}</ListItemIcon>
+            <ListItemText primary={label} primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }} />
+          </ListItemButton>
         ))}
-      </nav>
-    </aside>
+      </List>
+    </Drawer>
   )
 }
