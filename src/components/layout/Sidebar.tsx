@@ -5,45 +5,30 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Toolbar from '@mui/material/Toolbar'
-import DashboardIcon from '@mui/icons-material/Dashboard'
-import PeopleIcon from '@mui/icons-material/People'
-import InventoryIcon from '@mui/icons-material/Inventory'
-import SettingsIcon from '@mui/icons-material/Settings'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { useTheme } from '@mui/material/styles'
 import { useAppStore } from '@/store/useAppStore'
+import { NAV_ITEMS } from '@/constants'
 
 const SIDEBAR_WIDTH = 240
 
-// TODO: 依規格書調整選單項目
-const NAV_ITEMS = [
-  { to: '/', label: '首頁總覽', icon: <DashboardIcon /> },
-  { to: '/users', label: '使用者管理', icon: <PeopleIcon /> },
-  { to: '/products', label: '產品管理', icon: <InventoryIcon /> },
-  { to: '/settings', label: '系統設定', icon: <SettingsIcon /> },
-]
-
 export default function Sidebar() {
+  const theme = useTheme()
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'))
   const sidebarOpen = useAppStore((s) => s.sidebarOpen)
+  const setSidebarOpen = useAppStore((s) => s.setSidebarOpen)
 
-  if (!sidebarOpen) return null
-
-  return (
-    <Drawer
-      variant="persistent"
-      open={sidebarOpen}
-      sx={{
-        width: SIDEBAR_WIDTH,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': { width: SIDEBAR_WIDTH, boxSizing: 'border-box' },
-      }}
-    >
+  const drawerContent = (
+    <>
       <Toolbar variant="dense" sx={{ minHeight: 56 }} />
       <List sx={{ px: 1 }}>
-        {NAV_ITEMS.map(({ to, label, icon }) => (
+        {NAV_ITEMS.map(({ to, label, icon, end }) => (
           <ListItemButton
             key={to}
             component={NavLink}
             to={to}
-            end={to === '/'}
+            end={end}
+            onClick={() => { if (!isDesktop) setSidebarOpen(false) }}
             sx={{
               borderRadius: 1,
               mb: 0.5,
@@ -55,6 +40,38 @@ export default function Sidebar() {
           </ListItemButton>
         ))}
       </List>
+    </>
+  )
+
+  // 桌面：persistent（推擠式）
+  if (isDesktop) {
+    return (
+      <Drawer
+        variant="persistent"
+        open={sidebarOpen}
+        sx={{
+          width: SIDEBAR_WIDTH,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': { width: SIDEBAR_WIDTH, boxSizing: 'border-box' },
+        }}
+      >
+        {drawerContent}
+      </Drawer>
+    )
+  }
+
+  // 手機/平板：temporary（覆蓋式，點選項目或背景自動關閉）
+  return (
+    <Drawer
+      variant="temporary"
+      open={sidebarOpen}
+      onClose={() => setSidebarOpen(false)}
+      ModalProps={{ keepMounted: true }}
+      sx={{
+        '& .MuiDrawer-paper': { width: SIDEBAR_WIDTH, boxSizing: 'border-box' },
+      }}
+    >
+      {drawerContent}
     </Drawer>
   )
 }

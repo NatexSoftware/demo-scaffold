@@ -1,5 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import Box from '@mui/material/Box'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { useTheme } from '@mui/material/styles'
 import Header from './Header'
 import Sidebar from './Sidebar'
 import { useAppStore } from '@/store/useAppStore'
@@ -7,6 +9,8 @@ import { useAppStore } from '@/store/useAppStore'
 const SIDEBAR_WIDTH = 240
 
 export default function Layout() {
+  const theme = useTheme()
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'))
   const sidebarOpen = useAppStore((s) => s.sidebarOpen)
 
   return (
@@ -18,12 +22,16 @@ export default function Layout() {
           component="main"
           sx={{
             flex: 1,
-            p: 3,
-            ml: sidebarOpen ? `${SIDEBAR_WIDTH}px` : 0,
+            minWidth: 0,
+            px: { xs: 2, sm: 3, md: 4 },
+            py: { xs: 2, sm: 3 },
+            ml: isDesktop && sidebarOpen ? `${SIDEBAR_WIDTH}px` : 0,
             transition: 'margin-left 0.2s',
           }}
         >
-          <Outlet />
+          <Box sx={{ maxWidth: 1200, mx: 'auto', width: '100%' }}>
+            <Outlet />
+          </Box>
         </Box>
       </Box>
     </Box>

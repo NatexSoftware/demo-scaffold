@@ -29,3 +29,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Runtime
+docs/specs/*.md
+!docs/specs/.gitkeep
+.prompt.txt
