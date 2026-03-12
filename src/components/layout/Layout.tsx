@@ -23,15 +23,13 @@ export default function Layout() {
           sx={{
             flex: 1,
             minWidth: 0,
-            px: { xs: 2, sm: 3, md: 4 },
+            px: { xs: 2, sm: 3, md: 3 },
             py: { xs: 2, sm: 3 },
             ml: isDesktop && sidebarOpen ? `${SIDEBAR_WIDTH}px` : 0,
             transition: 'margin-left 0.2s',
           }}
         >
-          <Box sx={{ maxWidth: 1200, mx: 'auto', width: '100%' }}>
-            <Outlet />
-          </Box>
+          <Outlet />
         </Box>
       </Box>
     </Box>
